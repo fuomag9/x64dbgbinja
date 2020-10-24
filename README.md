@@ -1,6 +1,6 @@
 # x64dbgbinja
 
-Official x64dbg plugin for [Binary Ninja](https://binary.ninja).
+(Un)Official x64dbg plugin for [Binary Ninja](https://binary.ninja).
 
 ## Installation
 
