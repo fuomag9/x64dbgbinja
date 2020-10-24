@@ -1,5 +1,9 @@
+import json
+import os
+import sqlite3
+import traceback
+
 from binaryninja import *
-import os, sqlite3, traceback
 
 
 def get_module_name(view):
@@ -31,7 +35,7 @@ def export_db(view):
     db["labels"] = [{
         "text": symbol.name,
         "manual": False,
-        "module": module,
+        "module": f"{module}",
         "address": f"0x{symbol.address - base:X}"
     } for symbol in view.get_symbols()]
     print(f"{len(db['labels']):d} label(s) exported")
@@ -39,7 +43,7 @@ def export_db(view):
     db["comments"] = [{
         "text": func.comments[comment].replace("{", "{{").replace("}", "}}"),
         "manual": False,
-        "module": module,
+        "module": f"{module}",
         "address": f"0x{comment - base:X}"
     } for func in view.functions for comment in func.comments]
     print(f"{len(db['comments']):d} comment(s) exported")
