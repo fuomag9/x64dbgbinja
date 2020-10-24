@@ -24,7 +24,6 @@ def export_db(view):
     db = {}
     module = get_module_name(view).lower()
     base = view.start
-    dbext = f"dd{view.arch.default_int_size * 8:d}"
 
     file = get_save_filename_input("Export database", "x64dbg database (*.dd64 *.dd32);;All Files (*)")
     if not file:
@@ -54,7 +53,6 @@ def export_db(view):
 
 
 def import_db(view):
-    db = {}
     module = get_module_name(view).lower()
     base = view.start
 
