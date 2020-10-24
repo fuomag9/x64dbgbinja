@@ -20,34 +20,33 @@ def export_db(view):
     db = {}
     module = get_module_name(view).lower()
     base = view.start
-    dbext = "dd%d" % (view.arch.default_int_size * 8)
+    dbext = f"dd{view.arch.default_int_size * 8:d}"
 
-    file = get_save_filename_input("Export database", "*.%s" % dbext, "%s.%s" %
-                                   (module, dbext))
+    file = get_save_filename_input("Export database", f"*.{dbext}", f"{module}.{dbext}")
     if not file:
         return
-    print "Exporting database %s" % file
+    print(f"Exporting database {file}")
 
-    print "Exporting symbols"
+    print("Exporting symbols")
     db["labels"] = [{
         "text": symbol.name,
         "manual": False,
         "module": module,
-        "address": "0x%X" % (symbol.address - base)
+        "address": f"0x{symbol.address - base:X}"
     } for symbol in view.get_symbols()]
-    print "%d label(s) exported" % len(db["labels"])
+    print(f"{len(db['labels']):d} label(s) exported")
 
     db["comments"] = [{
         "text": func.comments[comment].replace("{", "{{").replace("}", "}}"),
         "manual": False,
         "module": module,
-        "address": "0x%X" % (comment - base)
+        "address": f"0x{comment - base:X}"
     } for func in view.functions for comment in func.comments]
-    print "%d comment(s) exported" % len(db["comments"])
+    print(f"{len(db['comments']):d} comment(s) exported")
 
     with open(file, "w") as outfile:
         json.dump(db, outfile, indent=1)
-    print "Done!"
+    print("Done!")
 
 
 def import_db(view):
@@ -55,11 +54,10 @@ def import_db(view):
     module = get_module_name(view).lower()
     base = view.start
 
-    file = get_open_filename_input("Import database", "*.dd%d" %
-                                   (view.arch.default_int_size * 8))
+    file = get_open_filename_input("Import database", f"*.dd{view.arch.default_int_size * 8:d}")
     if not file:
         return
-    print "Importing database %s" % file
+    print(f"Importing database {file}")
 
     with open(file) as dbdata:
         db = json.load(dbdata)
@@ -79,7 +77,7 @@ def import_db(view):
         except:
             traceback.print_exc()
             pass
-    print "%d/%d label(s) imported" % (count, len(labels))
+    print(f"{count:d}/{len(labels):d} label(s) imported")
 
     count = 0
     comments = db.get("comments", [])
@@ -95,9 +93,9 @@ def import_db(view):
         except:
             traceback.print_exc()
             pass
-    print "%d/%d comment(s) imported" % (count, len(comments))
+    print(f"{count:d}/{len(comments):d} comment(s) imported")
 
-    print "Done!"
+    print("Done!")
 
 
 PluginCommand.register("Export x64dbg database", "Export x64dbg database",
